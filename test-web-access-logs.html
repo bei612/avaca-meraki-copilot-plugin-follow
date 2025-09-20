@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Follow-up Web Access Logs 测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #0d0d0d;
+            color: #e9d5ff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .iframe-container {
+            background: #0d0d0d;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            margin: 20px 0;
+        }
+        iframe {
+            width: 100%;
+            height: 220px;
+            border: none;
+            border-radius: 8px;
+        }
+        .api-test {
+            background: rgba(30, 27, 75, 0.4);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .button {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 10px 20px;
+            transition: all 0.2s ease;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        .response {
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid rgba(49, 46, 129, 0.4);
+            border-radius: 8px;
+            color: #c4b5fd;
+            font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 10px;
+            overflow: auto;
+            padding: 16px;
+            white-space: pre-wrap;
+        }
+        h1, h2 {
+            color: #c4b5fd;
+        }
+        .demo-message {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(21, 128, 61, 0.1) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Follow-up Web Access Logs 测试页面</h1>
+        
+        <div class="demo-message">
+            <h2>📋 预期效果演示</h2>
+            <p><strong>💡 Follow-up:</strong></p>
+            <p>Notify the assigned staff and school counselor for early intervention?</p>
+            <button class="button">Yes</button>
+            <button class="button">No</button>
+            <p style="margin-top: 15px; color: #22c55e;"><strong>点击 [Yes] 后显示：</strong></p>
+            <p style="color: #22c55e;">✅ Email sent to assigned staff with incident summary and attendance context.</p>
+        </div>
+
+        <div class="api-test">
+            <h2>🚀 API 测试</h2>
+            <p>测试 <code>followUp_getWebAccessLogs</code> API 端点</p>
+            <button class="button" onclick="testAPI()">测试 API</button>
+            <button class="button" onclick="clearResponse()">清除响应</button>
+            <div id="apiResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="iframe-container">
+            <h2>🖼️ iframe 插件预览</h2>
+            <p>这是插件在 Avaka 中的实际显示效果：</p>
+            <iframe src="http://localhost:3410/iframe" title="Follow-up Plugin"></iframe>
+        </div>
+
+        <div class="api-test">
+            <h2>📝 配置信息</h2>
+            <p><strong>API 名称：</strong> <code>followUp_getWebAccessLogs</code></p>
+            <p><strong>端点：</strong> <code>/api/follow-up/web-access-logs</code></p>
+            <p><strong>描述：</strong> Follow-up action for web access logs analysis - offers staff notification</p>
+            <p><strong>参数：</strong> 无需参数</p>
+            <p><strong>响应格式：</strong></p>
+            <div class="response">
+{
+  "data": {
+    "actionType": "web_access_logs_follow_up",
+    "message": "💡 Follow-up:",
+    "promptText": "Notify the assigned staff and school counselor for early intervention?",
+    "yesActionText": "✅ Email sent to assigned staff with incident summary and attendance context.",
+    "noActionText": "Notify the assigned staff and school counselor for early intervention?",
+    "status": "pending",
+    "timestamp": 1756020634374
+  },
+  "timestamp": 1756020634374
+}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const responseDiv = document.getElementById('apiResponse');
+            responseDiv.style.display = 'block';
+            responseDiv.textContent = '正在调用 API...';
+
+            try {
+                const response = await fetch('/api/follow-up/web-access-logs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.textContent = '❌ API 调用失败: ' + error.message;
+            }
+        }
+
+        function clearResponse() {
+            const responseDiv = document.getElementById('apiResponse');
+            responseDiv.style.display = 'none';
+            responseDiv.textContent = '';
+        }
+
+        // 模拟 Avaka 消息发送（用于测试iframe）
+        function simulateLobeMessage() {
+            const iframe = document.querySelector('iframe');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                    type: 'lobe-chat:init-standalone-plugin',
+                    payload: {
+                        apiName: 'followUp_getWebAccessLogs'
+                    },
+                    toolCallId: 'test-web-access-logs-' + Date.now()
+                }, '*');
+            }
+        }
+
+        // 等待iframe加载后发送测试消息
+        window.addEventListener('load', () => {
+            setTimeout(simulateLobeMessage, 2000);
+        });
+    </script>
+</body>
+</html>
+

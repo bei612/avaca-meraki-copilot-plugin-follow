@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThousandEyes Follow-up API 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 ThousandEyes Follow-up API 测试</h1>
+        
+        <div class="test-section">
+            <h3>API 端点测试</h3>
+            <p>测试新增的 ThousandEyes 分析跟进 API</p>
+            <button onclick="testThousandEyesAPI()">测试 ThousandEyes Follow-up API</button>
+            <div id="api-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>预期响应格式</h3>
+            <pre id="expected-format">{
+  "data": {
+    "actionType": "thousandeyes_analysis_follow_up",
+    "message": "💡 Follow-up:",
+    "status": "pending",
+    "timestamp": 1234567890,
+    "noActionText": "Would you like me to open a ticket for the network team and suggest the reroute?",
+    "promptText": "Would you like me to open a ticket for the network team and suggest the reroute?",
+    "yesActionText": "✅ The work order has been created successfully. An engineer will contact you. The engineer's information:\n👨‍💼 Engineer Name: Bean.wang\n📞 Tel: +86 17625213200\n📧 Email: bean.wang@jototech.cn"
+  },
+  "timestamp": 1234567890
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        async function testThousandEyesAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<p>正在测试 API...</p>';
+            
+            try {
+                const response = await fetch('/api/follow-up/thousandeyes-analysis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API 测试成功!</h4>
+                            <p><strong>状态码:</strong> ${response.status}</p>
+                            <p><strong>响应数据:</strong></p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    
+                    // 验证响应格式
+                    validateResponse(data);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ API 测试失败</h4>
+                            <p><strong>状态码:</strong> ${response.status}</p>
+                            <p><strong>错误信息:</strong></p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ 网络错误</h4>
+                        <p><strong>错误信息:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function validateResponse(data) {
+            const validationDiv = document.createElement('div');
+            validationDiv.style.marginTop = '10px';
+            
+            const checks = [
+                { name: 'data 对象存在', test: () => data && typeof data === 'object' && 'data' in data },
+                { name: 'actionType 正确', test: () => data.data && data.data.actionType === 'thousandeyes_analysis_follow_up' },
+                { name: 'message 存在', test: () => data.data && data.data.message === '💡 Follow-up:' },
+                { name: 'status 为 pending', test: () => data.data && data.data.status === 'pending' },
+                { name: 'promptText 存在', test: () => data.data && typeof data.data.promptText === 'string' },
+                { name: 'yesActionText 存在', test: () => data.data && typeof data.data.yesActionText === 'string' },
+                { name: 'timestamp 存在', test: () => data.timestamp && typeof data.timestamp === 'number' }
+            ];
+            
+            const results = checks.map(check => ({
+                name: check.name,
+                passed: check.test()
+            }));
+            
+            const allPassed = results.every(r => r.passed);
+            
+            validationDiv.innerHTML = `
+                <h5>${allPassed ? '✅' : '⚠️'} 响应格式验证</h5>
+                <ul>
+                    ${results.map(r => `<li style="color: ${r.passed ? 'green' : 'red'}">${r.passed ? '✅' : '❌'} ${r.name}</li>`).join('')}
+                </ul>
+            `;
+            
+            document.getElementById('api-result').appendChild(validationDiv);
+        }
+    </script>
+</body>
+</html>
+
+
+

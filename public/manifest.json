@@ -1,0 +1,61 @@
+{
+  "$schema": "../node_modules/@lobehub/chat-plugin-sdk/schema.json",
+  "api": [
+    {
+      "url": "http://plugin-demo-0-avaca-dev.jototech.cn/api/follow-up/school-attendance",
+      "name": "followUp_getSchoolAttendance",
+      "description": "Follow-up action for tool-splunk-campus____getSchoolAttendance____standalone - offers to schedule daily attendance summary with trends and at-risk student alerts at 7:30 AM via email",
+      "parameters": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "url": "http://plugin-demo-0-avaca-dev.jototech.cn/api/follow-up/web-access-logs",
+      "name": "followUp_getWebAccessLogs",
+      "description": "Follow-up action for tool-splunk-WSA____getWebAccessLogs____standalone  - offers to notify assigned staff and school counselor for early intervention with incident summary and attendance context",
+      "parameters": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "url": "http://plugin-demo-0-avaca-dev.jototech.cn/api/follow-up/admissions-volume",
+      "name": "followUp_getAdmissionsVolume",
+      "description": "Follow-up action for tool-splunk-admissions____getAdmissionsVolume____standalone - offers to send admissions breakdown and lead analysis report to the Admissions team with event recommendations",
+      "parameters": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "url": "http://plugin-demo-0-avaca-dev.jototech.cn/api/follow-up/thousandeyes-analysis",
+      "name": "followUp_getThousandEyesAnalysis",
+      "description": "Follow-up action for tool-thousandeyes-analysis____getThousandEyesAnalysis____standalone - offers to open a ticket for the network team and suggest the reroute",
+      "parameters": {
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    }    
+  ],
+  "author": "JOTO",
+  "createdAt": "2025-08-20",
+  "identifier": "tool-follow-up-actions",
+  "meta": {
+    "avatar": "http://plugin-demo-0-avaca-dev.jototech.cn/logo.jpg",
+    "tags": ["follow-up", "automation", "notifications", "workflow"],
+    "title": "Follow-up Actions Tool for previous tool",
+    "description": "Provides follow-up tool callings and automation options after analysis completion. Offers scheduling, notifications, and report sharing capabilities. Only trigger when the previous tool is completed."
+  },
+  "type": "standalone",
+  "ui": {
+    "url": "http://plugin-demo-0-avaca-dev.jototech.cn/iframe",
+    "height": 220,
+    "width": 900
+  },
+  "version": "1"
+}
