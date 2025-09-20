@@ -188,6 +188,8 @@ timestamp: Date.now(),
   useEffect(() => {
     const loadData = async () => {
       try {
+        // 🔧 移除防重复机制：Fast Refresh 会导致误判，每个插件实例都应该能正常加载
+        
         console.log('[follow-up-actions] 🚀 开始数据加载');
         setLoading(true);
         setError(null);
@@ -217,6 +219,8 @@ timestamp: Date.now(),
         setError(errorMessage);
       } finally {
         setLoading(false);
+        
+        // 🔧 防重复机制已移除
       }
     };
 
